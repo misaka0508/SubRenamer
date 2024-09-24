@@ -20,9 +20,14 @@ public partial class SettingsViewModel : ViewModelBase
     private bool _updateCheckEnabled = Config.Get().UpdateCheck;
     private bool _keepLangExt = Config.Get().KeepLangExt;
     private bool _customLangExtEnabled = !string.IsNullOrEmpty(Config.Get().CustomLangExt);
+    private bool _fileConflictFilterEnabled = Config.Get().FileConflictFilter;
     private string _customLangExt = Config.Get().CustomLangExt;
     private string _videoExtAppend = Config.Get().VideoExtAppend;
     private string _subtitleExtAppend = Config.Get().SubtitleExtAppend;
+
+    /// Whether enabled the custom extension appending to classify the video and subtitle files
+    private bool _fileClsExtAppendEnabled =
+        !string.IsNullOrEmpty(Config.Get().VideoExtAppend) || !string.IsNullOrEmpty(Config.Get().SubtitleExtAppend);
 
     public bool BackupEnabled
     {
@@ -74,6 +79,17 @@ public partial class SettingsViewModel : ViewModelBase
             SetProperty(ref _customLangExt, value);
         }
     }
+    
+    public bool FileConflictFilter
+    {
+        get => _fileConflictFilterEnabled;
+        set
+        {
+            Config.Get().FileConflictFilter = value;
+            SetProperty(ref _fileConflictFilterEnabled, value);
+        }
+    }
+    
     public string VideoExtAppend
     {
         get => _videoExtAppend;
@@ -91,6 +107,20 @@ public partial class SettingsViewModel : ViewModelBase
         {
             Config.Get().SubtitleExtAppend = value;
             SetProperty(ref _subtitleExtAppend, value);
+        }
+    }
+
+    public bool FileClsExtAppendEnabled
+    {
+        get => _fileClsExtAppendEnabled;
+        set
+        {
+            if (!value)
+            {
+                VideoExtAppend = "";
+                SubtitleExtAppend = "";
+            }
+            SetProperty(ref _fileClsExtAppendEnabled, value);
         }
     }
     
